@@ -26,6 +26,55 @@ app.get('/', (req, res) => {
         })
 });
 
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+
+    Product.findById(id)
+        .exec((err, product) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mesage: 'error to search product'
+                })
+            };
+
+            if (!product) {
+                return res.status(400).json({
+                    ok: false,
+                    mesage: 'error product not existed',
+                    error: { message: 'product with' + id + 'not existed' }
+                })
+            };
+
+            res.status(201).json({
+                ok: true,
+                product: product
+            });
+        })
+});
+
+app.get('/subline/:subline', (req, res) => {
+
+    var subline = req.params.subline;
+
+    Product.find({ subline: subline }, {})
+        .populate('subline')
+        .exec((err, products) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db products'
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                products: products
+            });
+        })
+});
+
 app.post('/', verifyToken.verifyToken, (req, res) => {
 
     var body = req.body;

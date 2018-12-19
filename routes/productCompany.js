@@ -28,12 +28,35 @@ app.get('/', (req, res) => {
         })
 });
 
+app.get('/:id', (req, res) => {
+
+    var id = req.params.id;
+
+    ProductCompany.find({ product: id }, {})
+        .populate('company')
+        .exec((err, companies) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db companies'
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                companies: companies
+            });
+        })
+});
+
 app.post('/', verifyToken.verifyToken, (req, res) => {
 
     var body = req.body;
     var productCompany = new ProductCompany({
         //description: body.description,
         price: body.price,
+        secondprice: body.secondprice,
         product: body.product,
         company: body.company
     });
@@ -76,6 +99,7 @@ app.put('/:id', verifyToken.verifyToken, (req, res) => {
 
         //productCompany.description = body.description;
         productCompany.price = body.price;
+        productCompany.secondprice = body.secondprice;
         productCompany.product = body.product;
         productCompany.company = body.company;
 

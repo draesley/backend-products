@@ -165,6 +165,9 @@ function getMenu(role) {
             title: 'Role',
             url: '/pages/role'
         }, {
+            title: 'Service',
+            url: '/pages/service'
+        }, {
             title: 'SubLine',
             url: '/pages/subline'
         }, {

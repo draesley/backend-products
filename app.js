@@ -51,7 +51,9 @@ var sublineRoutes = require('./routes/subline');
 var uploadRoutes = require('./routes/upload');
 var imgRoutes = require('./routes/img');
 var searchRoutes = require('./routes/search');
+var serviceRoutes = require('./routes/services');
 
+app.use('/services', serviceRoutes);
 app.use('/search', searchRoutes);
 app.use('/img', imgRoutes);
 app.use('/upload', uploadRoutes);

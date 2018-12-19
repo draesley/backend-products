@@ -1,9 +1,10 @@
 var express = require('express');
 var Product = require('../models/product');
+var Service = require('../models/services');
 
 var app = express();
 
-app.get('/all/:index', (req, res, nex) => {
+app.get('/product/:index', (req, res, nex) => {
 
     var search = req.params.index;
     var regex = new RegExp(search, 'i');
@@ -13,6 +14,20 @@ app.get('/all/:index', (req, res, nex) => {
         res.status(200).json({
             ok: true,
             products: products
+        })
+    });
+});
+
+app.get('/service/:index', (req, res, nex) => {
+
+    var search = req.params.index;
+    var regex = new RegExp(search, 'i');
+
+    Service.find({ name: regex }, (err, services) => {
+
+        res.status(200).json({
+            ok: true,
+            services: services
         })
     });
 });

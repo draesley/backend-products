@@ -6,6 +6,7 @@ var app = express();
 var User = require('../models/user');
 var Company = require('../models/company');
 var Product = require('../models/product');
+var Service = require('../models/services');
 
 app.use(fileupload());
 
@@ -14,7 +15,7 @@ app.put('/:type/:id', (req, res) => {
     var type = req.params.type;
     var id = req.params.id;
 
-    var types = ['user', 'company', 'product'];
+    var types = ['user', 'company', 'product', 'service'];
 
     if (types.indexOf(type) < 0) {
         return res.status(400).json({
@@ -143,7 +144,34 @@ function uploadByType(type, id, filename, res) {
                 });
             });
         });
-    }
+    };
+
+    if (type === 'service') {
+        Service.findById(id, (err, service) => {
+
+            if (!service) {
+                return res.status(400).json({
+                    ok: false,
+                    mesage: 'service not existed'
+                });
+            };
+
+            var oldpath = '../uploads/service/' + service.img;
+
+            if (fs.existsSync(oldpath)) {
+                fs.unlink(oldpath);
+            };
+
+            service.img = filename;
+            service.save((err, serviceupdate) => {
+
+                return res.status(200).json({
+                    ok: 'ok',
+                    service: serviceupdate
+                });
+            });
+        });
+    };
 }
 
 module.exports = app;

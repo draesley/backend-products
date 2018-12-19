@@ -1,25 +1,30 @@
 var express = require('express');
-var Category = require('../models/category');
+
+var Services = require('../models/services');
 var verifyToken = require('../middlewares/authentication');
 
 var app = express();
 
+app.get('/', (req, res, nex) => {
 
-app.get('/', (req, res) => {
-
-    Category.find({})
-        .exec((err, categories) => {
-
+    Services.find({})
+        .populate('company')
+        .populate('subline')
+        .exec((err, services) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    message: 'Error to find en db categorys'
+                    message: 'Error to find en db services'
                 });
-            }
+            };
+
 
             res.status(200).json({
                 ok: true,
-                categories: categories
+                services: services,
+                company: res.company,
+                subline: res.subline
+
             });
         })
 });
@@ -27,23 +32,25 @@ app.get('/', (req, res) => {
 app.post('/', verifyToken.verifyToken, (req, res) => {
 
     var body = req.body;
-    var category = new Category({
+    var service = new Services({
         name: body.name,
-        index: body.index
+        description: body.description,
+        company: body.company,
+        subline: body.subline
     });
 
-    category.save((err, categorySave) => {
+    service.save((err, servicesave) => {
 
         if (err) {
             return res.status(500).json({
                 ok: false,
-                message: 'Error category not save'
+                message: 'Error services not save'
             });
         };
 
         res.status(201).json({
             ok: true,
-            category: categorySave
+            servicesave: servicesave
         });
     });
 });
@@ -52,65 +59,67 @@ app.put('/:id', verifyToken.verifyToken, (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
-    Category.findById(id, (err, category) => {
+    Services.findById(id, (err, service) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mesage: 'error to search category'
+                mesage: 'error to search service'
             })
         };
 
-        if (!category) {
+        if (!service) {
             return res.status(400).json({
                 ok: false,
-                mesage: 'error category not existed',
-                error: { message: 'category with' + id + 'not existed' }
+                mesage: 'error service not existed',
+                error: { message: 'service with' + id + 'not existed' }
             })
         };
 
-        category.name = body.name;
-        category.index = body.index;
+        service.name = body.name;
+        service.description = body.description;
+        service.company = body.company;
+        service.subline = body.subline;
 
-        category.save((err, categorysave) => {
+        service.save((err, servicesave) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mesage: 'Error to update category',
+                    mesage: 'Error to service',
                     error: err
                 })
             };
 
             res.status(201).json({
                 ok: true,
-                category: categorysave
+                service: servicesave
             });
         });
     });
 });
 
-app.delete('/:id', (req, res) => {
+app.delete('/:id', verifyToken.verifyToken, (req, res) => {
     var id = req.params.id;
 
-    Category.findByIdAndRemove(id, (err, category) => {
+    Services.findByIdAndRemove(id, (err, service) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mesage: 'Error to remove category',
+                mesage: 'Error to remove service',
                 error: err
             })
         };
 
-        if (!category) {
+        if (!service) {
             return res.status(400).json({
                 ok: false,
-                mesage: 'Error category whit id not exist',
+                mesage: 'Error service whit id not exist',
                 error: err
             })
         };
 
         res.status(200).json({
             ok: true,
-            category: category
+            service: service
         });
     });
 });

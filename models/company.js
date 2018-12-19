@@ -10,7 +10,7 @@ var contactSchema = Schema({
     logo: { type: String, required: false },
     eslogan: { type: String, required: false },
     email: { type: String, required: [true, 'email is requierd'] },
-    phon: { type: Number, required: [true, 'phon is requierd'] },
+    phon: { type: Number, required: false },
     movil: { type: Number, required: [true, 'phon is requierd'] },
     contact: { type: Schema.Types.ObjectId, ref: 'Contact' },
     location: { type: Schema.Types.ObjectId, ref: 'Location' }

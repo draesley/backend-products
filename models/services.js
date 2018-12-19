@@ -4,9 +4,10 @@ var Schema = mongoose.Schema;
 
 var servicesSchema = Schema({
     name: { type: String, required: [true, 'description is required'] },
-    price: { type: Number, required: [true, 'price is required'] },
-    product: { type: Schema.Types.ObjectId, ref: 'Product' },
-    company: { type: Schema.Types.ObjectId, ref: 'Company' }
+    description: { type: String, required: false },
+    img: { type: String, required: false },
+    company: { type: Schema.Types.ObjectId, ref: 'Company' },
+    subline: { type: Schema.Types.ObjectId, ref: 'Subline' }
 });
 
 module.exports = mongoose.model('Services', servicesSchema);

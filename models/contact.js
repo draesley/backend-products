@@ -7,7 +7,7 @@ var contactSchema = Schema({
     name: { type: String, required: [true, 'Name is requiredd'] },
     lastname: { type: String, required: [true, 'Lastname is requiredd'] },
     adress: { type: String, required: [true, 'Adress is requiredd'] },
-    phon: { type: Number, required: [true, 'Phon is requiredd'] },
+    phon: { type: Number, required: false },
     movil: { type: Number, required: [true, 'Movil is requiredd'] },
     email: { type: String, required: [true, 'Email is requiredd'] },
     img: { type: String, required: false },
