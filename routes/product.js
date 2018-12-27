@@ -26,6 +26,57 @@ app.get('/', (req, res) => {
         })
 });
 
+app.get('/subline/:subline', (req, res) => {
+
+    var subline = req.params.subline;
+
+    Product.find({ subline: subline }, {})
+        .populate('subline')
+        .exec((err, products) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db products'
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                products: products
+            });
+        })
+});
+
+app.get('/pagina', (req, res) => {
+
+    var index = req.query.index || 0;
+    var index2 = Number(index);
+
+    Product.find({})
+        .skip(index2)
+        .limit(20)
+        .populate('subline')
+        .exec((err, products) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db products'
+                });
+            }
+
+            Product.paginate({}, {}, function(err, result) {
+                res.status(200).json({
+                    ok: true,
+                    products: products,
+                    total: result.total
+                });
+            });
+
+        })
+});
+
 app.get('/:id', (req, res) => {
     var id = req.params.id;
 
@@ -49,28 +100,6 @@ app.get('/:id', (req, res) => {
             res.status(201).json({
                 ok: true,
                 product: product
-            });
-        })
-});
-
-app.get('/subline/:subline', (req, res) => {
-
-    var subline = req.params.subline;
-
-    Product.find({ subline: subline }, {})
-        .populate('subline')
-        .exec((err, products) => {
-
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    message: 'Error to find en db products'
-                });
-            }
-
-            res.status(200).json({
-                ok: true,
-                products: products
             });
         })
 });

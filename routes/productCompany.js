@@ -50,6 +50,63 @@ app.get('/:id', (req, res) => {
         })
 });
 
+app.get('/company/:id', (req, res) => {
+
+    var id = req.params.id;
+
+    ProductCompany.find({ company: id }, {})
+        .populate('product')
+        .exec((err, products) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db products'
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                products: products
+            });
+        })
+});
+
+app.get('/pagina/:id', (req, res) => {
+
+    var id = req.params.id;
+    var index = req.query.index || 0;
+    var index2 = Number(index);
+
+    ProductCompany.find({ product: id })
+        .skip(index2)
+        .limit(20)
+        .populate('subline')
+        .exec((err, procompanies) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db companies'
+                });
+            }
+
+            ProductCompany.paginate({}, {}, function(err, result) {
+                // result.docs
+                // result.total
+                // result.limit - 10
+                // result.page - 3
+                // result.pages
+                res.status(200).json({
+                    ok: true,
+                    companies: procompanies,
+                    total: result.total
+                });
+            });
+
+        })
+});
+
 app.post('/', verifyToken.verifyToken, (req, res) => {
 
     var body = req.body;

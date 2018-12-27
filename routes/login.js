@@ -1,6 +1,8 @@
 var express = require('express');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+var Contact = require('../models/contact');
+var Company = require('../models/company');
 
 var app = express();
 var User = require('../models/user');
@@ -39,8 +41,29 @@ app.post('/', (req, res) => {
                 });
             };
 
+            //buscar contact
+            Contact.findOne({ user: userdb._id })
+                .exec((err, contactdb) => {
+                    if (contactdb) {
+                        Company.findOne({ contact: contactdb._id })
+                            .exec((err, company) => {
+                                var token = jwt.sign({ user: userdb }, SEED, { expiresIn: 14400 });
+
+                                res.status(200).json({
+                                    ok: true,
+                                    user: userdb,
+                                    token: token,
+                                    menu: getMenu(userdb.role.name),
+                                    company: company
+                                });
+                            })
+                    }
+                });
+
+
+
             //create token
-            userdb.password = ':)';
+            /*  userdb.password = ':)';
             var token = jwt.sign({ user: userdb }, SEED, { expiresIn: 14400 });
 
             res.status(200).json({
@@ -48,7 +71,7 @@ app.post('/', (req, res) => {
                 user: userdb,
                 token: token,
                 menu: getMenu(userdb.role.name)
-            });
+            });*/
         });
 });
 
@@ -111,9 +134,10 @@ function getMenu(role) {
     var menu = [{
             title: 'Main',
             icon: 'mdi mdi-gauge',
-            submenu: [
-
-            ]
+            submenu: [{
+                title: 'product-company',
+                url: '/pages/attribute-product-company'
+            }]
         },
         {
             title: 'administrator',
@@ -167,6 +191,9 @@ function getMenu(role) {
         }, {
             title: 'Service',
             url: '/pages/service'
+        }, {
+            title: 'Service-Company',
+            url: '/pages/services-company'
         }, {
             title: 'SubLine',
             url: '/pages/subline'

@@ -32,4 +32,21 @@ app.get('/service/:index', (req, res, nex) => {
     });
 });
 
+/* app.get('/category?:index?:id', (req, res, nex) => {
+
+    var search = req.params.index;
+    var id = req.params.id;
+    var subline = new RegExp(id);
+    var regex = new RegExp(search, 'i');
+
+    Product.find({ name: regex, subline: { $gte: subline } }, (err, products) => {
+        res.status(200).json({
+            ok: true,
+            products: products
+        })
+    });
+
+
+}); */
+
 module.exports = app;

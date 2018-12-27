@@ -52,7 +52,9 @@ var uploadRoutes = require('./routes/upload');
 var imgRoutes = require('./routes/img');
 var searchRoutes = require('./routes/search');
 var serviceRoutes = require('./routes/services');
+var serviceCompanyRouter = require('./routes/serviceCompany');
 
+app.use('/serviceCompany', serviceCompanyRouter);
 app.use('/services', serviceRoutes);
 app.use('/search', searchRoutes);
 app.use('/img', imgRoutes);

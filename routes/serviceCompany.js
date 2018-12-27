@@ -1,14 +1,15 @@
 var express = require('express');
 
-var Services = require('../models/services');
+var ServiceCompany = require('../models/serviceCompany');
 var verifyToken = require('../middlewares/authentication');
 
 var app = express();
 
 app.get('/', (req, res, nex) => {
 
-    Services.find({})
-        .populate('subline')
+    ServiceCompany.find({})
+        .populate('service')
+        .populate('company')
         .exec((err, services) => {
             if (err) {
                 return res.status(500).json({
@@ -21,35 +22,28 @@ app.get('/', (req, res, nex) => {
             res.status(200).json({
                 ok: true,
                 services: services,
-                subline: res.subline
-
             });
         })
 });
 
 app.get('/:id', (req, res) => {
+
     var id = req.params.id;
 
-    Services.findById(id)
-        .exec((err, service) => {
+    ServiceCompany.find({ service: id }, {})
+        .populate('company')
+        .exec((err, companies) => {
+
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mesage: 'error to search service'
-                })
-            };
+                    message: 'Error to find en db companies'
+                });
+            }
 
-            if (!service) {
-                return res.status(400).json({
-                    ok: false,
-                    mesage: 'error service not existed',
-                    error: { message: 'service with' + id + 'not existed' }
-                })
-            };
-
-            res.status(201).json({
+            res.status(200).json({
                 ok: true,
-                service: service
+                companies: companies
             });
         })
 });
@@ -57,13 +51,13 @@ app.get('/:id', (req, res) => {
 app.post('/', verifyToken.verifyToken, (req, res) => {
 
     var body = req.body;
-    var service = new Services({
-        name: body.name,
+    var serviceCompany = new ServiceCompany({
         description: body.description,
-        subline: body.subline
+        service: body.service,
+        company: body.company
     });
 
-    service.save((err, servicesave) => {
+    serviceCompany.save((err, serviceComanysave) => {
 
         if (err) {
             return res.status(500).json({
@@ -74,7 +68,7 @@ app.post('/', verifyToken.verifyToken, (req, res) => {
 
         res.status(201).json({
             ok: true,
-            servicesave: servicesave
+            serviceCompany: serviceComanysave
         });
     });
 });
@@ -83,27 +77,27 @@ app.put('/:id', verifyToken.verifyToken, (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
-    Services.findById(id, (err, service) => {
+    ServiceCompany.findById(id, (err, serviceCompany) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mesage: 'error to search service'
+                mesage: 'error to search serviceCompany'
             })
         };
 
-        if (!service) {
+        if (!serviceCompany) {
             return res.status(400).json({
                 ok: false,
-                mesage: 'error service not existed',
-                error: { message: 'service with' + id + 'not existed' }
+                mesage: 'error serviceCompany not existed',
+                error: { message: 'serviceCompany with' + id + 'not existed' }
             })
         };
 
-        service.name = body.name;
-        service.description = body.description;
-        service.subline = body.subline;
+        serviceCompany.description = body.description;
+        serviceCompany.company = body.company;
+        serviceCompany.service = body.service;
 
-        service.save((err, servicesave) => {
+        serviceCompany.save((err, serviceCompany) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -114,7 +108,7 @@ app.put('/:id', verifyToken.verifyToken, (req, res) => {
 
             res.status(201).json({
                 ok: true,
-                service: servicesave
+                serviceCompany: serviceCompany
             });
         });
     });
@@ -123,7 +117,7 @@ app.put('/:id', verifyToken.verifyToken, (req, res) => {
 app.delete('/:id', verifyToken.verifyToken, (req, res) => {
     var id = req.params.id;
 
-    Services.findByIdAndRemove(id, (err, service) => {
+    ServiceCompany.findByIdAndRemove(id, (err, service) => {
         if (err) {
             return res.status(500).json({
                 ok: false,

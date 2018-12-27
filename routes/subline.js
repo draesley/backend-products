@@ -21,7 +21,6 @@ app.get('/', (req, res) => {
             res.status(200).json({
                 ok: true,
                 sublines: sublines,
-                line: res.line
             });
         })
 });

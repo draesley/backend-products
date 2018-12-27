@@ -29,6 +29,40 @@ app.get('/', (req, res) => {
         })
 });
 
+app.get('/pagina', (req, res) => {
+
+    var index = req.query.index || 0;
+    var index2 = Number(index);
+
+    Company.find({})
+        .skip(index2)
+        .limit(20)
+        .populate('subline')
+        .exec((err, companies) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error to find en db companies'
+                });
+            }
+
+            Company.paginate({}, {}, function(err, result) {
+                // result.docs
+                // result.total
+                // result.limit - 10
+                // result.page - 3
+                // result.pages
+                res.status(200).json({
+                    ok: true,
+                    companies: companies,
+                    total: result.total
+                });
+            });
+
+        })
+});
+
 app.post('/', verifyToken.verifyToken, (req, res) => {
 
     var body = req.body;

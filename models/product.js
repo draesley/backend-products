@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var mongoosePaginate = require('mongoose-paginate');
 
 var Schema = mongoose.Schema;
 
@@ -9,5 +9,6 @@ var productSchema = Schema({
     detail: { type: String, required: [true, 'detail is required'] },
     subline: { type: Schema.Types.ObjectId, ref: 'Subline' }
 });
+productSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Product', productSchema);
