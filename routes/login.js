@@ -134,10 +134,7 @@ function getMenu(role) {
     var menu = [{
             title: 'Main',
             icon: 'mdi mdi-gauge',
-            submenu: [{
-                title: 'product-company',
-                url: '/pages/attribute-product-company'
-            }]
+            submenu: []
         },
         {
             title: 'administrator',
@@ -203,6 +200,11 @@ function getMenu(role) {
         }, {
             title: 'User',
             url: '/pages/user'
+        })
+    } else {
+        menu[0].submenu.unshift({
+            title: 'product-company',
+            url: '/pages/attribute-product-company'
         })
     }
 

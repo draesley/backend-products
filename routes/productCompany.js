@@ -4,7 +4,6 @@ var verifyToken = require('../middlewares/authentication');
 
 var app = express();
 
-
 app.get('/', (req, res) => {
 
     ProductCompany.find({})

@@ -2,6 +2,8 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyparser = require('body-parser');
 
+
+
 var app = express();
 
 //para permitir las peticiones evita el error Access-Control-Allow-Origin'
